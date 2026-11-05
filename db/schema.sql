@@ -1,0 +1,56 @@
+CREATE DATABASE IF NOT EXISTS CollabSpaceDB;
+USE CollabSpaceDB;
+
+CREATE TABLE IF NOT EXISTS `User` (
+    UserID INT AUTO_INCREMENT PRIMARY KEY,
+    FirstName VARCHAR(50) NOT NULL,
+    LastName VARCHAR(50) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    CONSTRAINT uq_user_email UNIQUE (Email)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `Document` (
+    DocumentID INT AUTO_INCREMENT PRIMARY KEY,
+    Title VARCHAR(150) NOT NULL,
+    OwnerID INT NOT NULL,
+    CreatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_document_owner FOREIGN KEY (OwnerID)
+        REFERENCES `User`(UserID)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `Session` (
+    SessionID INT AUTO_INCREMENT PRIMARY KEY,
+    DocumentID INT NOT NULL,
+    UserID INT NOT NULL,
+    ConnectedAt DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    LastSeenAt DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    Status VARCHAR(20) NOT NULL DEFAULT 'Active',
+    CONSTRAINT fk_session_document FOREIGN KEY (DocumentID)
+        REFERENCES `Document`(DocumentID),
+    CONSTRAINT fk_session_user FOREIGN KEY (UserID)
+        REFERENCES `User`(UserID)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `EditOperation` (
+    OperationID BIGINT AUTO_INCREMENT PRIMARY KEY,
+    DocumentID INT NOT NULL,
+    SessionID INT NOT NULL,
+    OpType VARCHAR(10) NOT NULL,
+    PositionIndex INT NOT NULL,
+    Content VARCHAR(500),
+    AppliedAt DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    CONSTRAINT fk_edit_document FOREIGN KEY (DocumentID)
+        REFERENCES `Document`(DocumentID),
+    CONSTRAINT fk_edit_session FOREIGN KEY (SessionID)
+        REFERENCES `Session`(SessionID),
+    INDEX idx_document_applied (DocumentID, AppliedAt)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS `DocumentSnapshot` (
+    SnapshotID INT AUTO_INCREMENT PRIMARY KEY,
+    DocumentID INT NOT NULL,
+    SnapshotContent MEDIUMTEXT NOT NULL,
+    TakenAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_snapshot_document FOREIGN KEY (DocumentID)
+        REFERENCES `Document`(DocumentID)
+) ENGINE=InnoDB;

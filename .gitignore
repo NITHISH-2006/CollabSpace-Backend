@@ -1,0 +1,13 @@
+target/
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+build/
+*.log
+.DS_Store
+
+# Local secrets - never commit
+src/main/resources/db.properties
