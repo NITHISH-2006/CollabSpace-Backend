@@ -64,7 +64,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
-                    <mainClass>com.collabspace.main.MainModule</mainClass>
+                    <mainClass>com.collabspace.util.ConnectionCheck</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -74,10 +74,31 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.collabspace.main.MainModule</mainClass>
+                            <mainClass>com.collabspace.util.ConnectionCheck</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.collabspace.util.ConnectionCheck</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

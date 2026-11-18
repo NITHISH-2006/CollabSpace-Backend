@@ -11,3 +11,6 @@ build/
 
 # Local secrets - never commit
 src/main/resources/db.properties
+
+# Personal study materials - not for GitHub
+study-materials/
